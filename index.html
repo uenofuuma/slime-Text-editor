@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang = 'ja'>
+  <head>
+    <meta charset ="utf-8"/>
+    <link rel="icon" type="image/png" href="https://pics.prcm.jp/8c09830f44447/70074920/png/70074920.png">
+    <title>
+      slimeテキストエディタ
+    </title>
+  </head>
+  <body>
+  <h1>slimeテキストエディタ</h1>
+  <p>オフライン環境でも動作するシンプルなテキストエディタ</p>
+  
+  <div>
+    <textarea id='$input' rows='20' cols='140'>Hello,slime!</textarea>
+  </div>
+  <a id='$btn' class='btn' download='sample.txt'>ダウンロード</a>
+
+  <script>
+    window.onload = function() {
+  // ダウンロードボタンを押した際のイベントを登録
+  $btn.onclick = () => {
+    // blob オブジェクトを生成
+    var content = $input.value;
+    var blob = new Blob([content], { type: 'text/plain' });
+    
+    // download の href に object url を設定
+    $btn.href = window.URL.createObjectURL(blob);
+  };
+};
+  </script>
+</body>
+</html>
