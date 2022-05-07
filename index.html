@@ -1,23 +1,61 @@
 <!DOCTYPE html>
-<html lang = 'ja'>
-  <head>
-    <meta charset ="utf-8"/>
+<html>
+    <head>
+      <meta charset ="utf-8"/>
     <link rel="icon" type="image/png" href="https://pics.prcm.jp/8c09830f44447/70074920/png/70074920.png">
-    <title>
-      slimeテキストエディタ
-    </title>
-  </head>
-  <body>
-  <h1>slimeテキストエディタ</h1>
-  <p>オフライン環境でも動作するシンプルなテキストエディタ</p>
-  
-  <div>
-    <textarea id='$input' rows='20' cols='140'>Hello,slime!</textarea>
-  </div>
-  <a id='$btn' class='btn' download='sample.txt'>ダウンロード</a>
+        <title>slimeテキストエディタ</title>
+    </head>
+    <body>
+        <h1>slimeテキストエディタ</h1>
+      <p>オフライン環境でも動作するシンプルなテキストエディタ</p>
+        <form name="form1">
+            <textarea id='$input' rows='20' cols='140' name="Memo">Hello,slime!</textarea>
+        </form>
+        <p>
+            <input type="button" value="保存" onclick=save(); ></input>
+            <input type="button" value="読込" onclick=load(); ></input>
+      <input id='$inputFile' type='file' />
+            <a id='$btn' class='btn' download='index.txt'>ダウンロード</a>
+        </p>
 
   <script>
+    
     window.onload = function() {
+$btn.onclick = () => {
+    // blob オブジェクトを生成
+    var content = $input.value;
+    var blob = new Blob([content], { type: 'text/plain' });
+    
+    // download の href に object url を設定
+    $btn.href = window.URL.createObjectURL(blob);
+  };
+  
+  $inputFile.onchange = async (e) => {
+    // ファイルオブジェクトを取得
+    var file = e.currentTarget.files[0];
+    if (!file) return ;
+    
+    // 中身を取得
+    var text = await fetchAsText(file);
+    
+    // テキストエリアに代入
+    $input.value = text;
+  };
+};
+
+// ファイルから内容をテキストとして取得する Promise を返す
+var fetchAsText = (file) => {
+  return new Promise((resolve) => {
+    var fr = new FileReader();
+    fr.onload = (e) => {
+      // 読み込んだ結果を resolve する
+      resolve(e.currentTarget.result);
+    };
+    // 読み込む
+    fr.readAsText(file);
+  });
+
+      
   // ダウンロードボタンを押した際のイベントを登録
   $btn.onclick = () => {
     // blob オブジェクトを生成
@@ -29,5 +67,22 @@
   };
 };
   </script>
-</body>
+            <script type="text/javascript">
+                // 読込
+                function load() {
+                    var MemoData = "";
+                    if(!localStorage.getItem('MemoData')) {
+                        MemoData = "メモは登録されていません。";
+                    } else {
+                        MemoData = localStorage.getItem('MemoData');
+                    }
+                    document.form1.Memo.value = MemoData;
+                }
+                // 保存
+                function save() {
+                    var MemoData = document.form1.Memo.value;
+                    localStorage.setItem('MemoData', MemoData);
+                }
+            </script>
+        </body>
 </html>
